@@ -1,19 +1,15 @@
-import { useState } from "react";
 import styled from "../style/common.module.scss";
-import { Typography, Empty } from "antd";
+import { Typography, Empty, Spin } from "antd";
 import { QuestionCard } from "../../../components/QuestionCard";
 import { useTitle } from "ahooks";
 import { SearchList } from "../../../components/SearchList";
-
-const initialStarList = [
-  { _id: "q1", title: "问卷01", isPublish: false, isStar: true, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q2", title: "问卷02", isPublish: false, isStar: true, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q3", title: "问卷03", isPublish: false, isStar: true, answerCount: 5, createdAt: "03/10 13:05" }
-];
+import { useLoadQuestionList } from "../../../hooks/question.ts";
 
 export const Star = () => {
   useTitle("Questionnaire Master / Star");
-  const [starList] = useState(initialStarList);
+  const { data = {}, loading } = useLoadQuestionList({ isStar: true });
+  const { list = [] } = data;
+
   return (
     <>
       <header className={styled.header}>
@@ -25,9 +21,15 @@ export const Star = () => {
         </div>
       </header>
       <div className={styled.content}>
-        {starList.length === 0 && <Empty />}
-        {starList.length > 0 &&
-          starList.map((item) => {
+        {loading && (
+          <div style={{ textAlign: "center" }}>
+            <Spin />
+          </div>
+        )}
+        {!loading && list.length === 0 && <Empty />}
+        {!loading &&
+          list.length > 0 &&
+          list.map((item: any) => {
             return <QuestionCard key={item._id} {...item} />;
           })}
       </div>

@@ -1,23 +1,20 @@
+import * as React from "react";
 import styled from "../style/common.module.scss";
-import { Empty, Typography, Table, TableColumnsType, Tag, Space, Button, Modal, message } from "antd";
+import { Empty, Typography, Table, TableColumnsType, Tag, Space, Button, Modal, message, Pagination } from "antd";
 import { useTitle } from "ahooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchList } from "../../../components/SearchList";
-
-const initialTrashList = [
-  { _id: "q1", title: "问卷01", isPublish: true, isStar: false, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q2", title: "问卷02", isPublish: false, isStar: true, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q3", title: "问卷03", isPublish: true, isStar: false, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q4", title: "问卷04", isPublish: true, isStar: false, answerCount: 5, createdAt: "03/10 13:05" },
-  { _id: "q5", title: "问卷05", isPublish: false, isStar: true, answerCount: 5, createdAt: "03/10 13:05" }
-];
+import { useLoadQuestionList } from "../../../hooks/question.ts";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 export const Trash = () => {
   useTitle("Questionnaire Master / Trash");
-  const [trashList] = useState(initialTrashList);
   const [selectIds, setSelectIds] = useState<string[]>([]);
 
-  const columns: TableColumnsType<(typeof initialTrashList)[0]> = [
+  const { loading, data = {} } = useLoadQuestionList({ isDeleted: true });
+  const { list = [], total } = data;
+
+  const columns: TableColumnsType<(typeof list)[0]> = [
     { title: "标题", dataIndex: "title", align: "center" },
     {
       title: "是否发布",
@@ -53,7 +50,7 @@ export const Trash = () => {
         </Button>
       </Space>
       <Table
-        dataSource={trashList}
+        dataSource={list}
         columns={columns}
         pagination={false}
         rowKey={({ _id }) => _id}
@@ -77,10 +74,43 @@ export const Trash = () => {
         </div>
       </header>
       <div className={styled.content}>
-        {trashList.length === 0 && <Empty />}
-        {trashList.length > 0 && TableEle}
+        {list.length === 0 && <Empty />}
+        {!loading && list.length > 0 && TableEle}
       </div>
-      <footer className={styled.footer}>上滑加载更多...</footer>
+      <footer className={styled.footer}>
+        <CustomPagination total={total} />
+      </footer>
     </>
   );
+};
+
+interface ICustomPaginationProps {
+  total: number;
+}
+
+const CustomPagination: React.FC<ICustomPaginationProps> = ({ total }) => {
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const page = parseInt(searchParams.get("page") || "", 10) || 1;
+    const size = parseInt(searchParams.get("size") || "", 10) || 10;
+    setCurrent(page);
+    setPageSize(size);
+  }, [searchParams]);
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const handleChange = (page: number, size: number) => {
+    searchParams.set("page", page.toString());
+    searchParams.set("size", size.toString());
+
+    navigate({
+      pathname,
+      search: searchParams.toString()
+    });
+  };
+
+  return <Pagination current={current} pageSize={pageSize} total={total} onChange={handleChange} />;
 };

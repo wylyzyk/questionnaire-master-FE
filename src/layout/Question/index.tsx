@@ -1,5 +1,10 @@
 import * as React from "react";
+import { Outlet } from "react-router-dom";
 
 export const Question: React.FC = () => {
-  return <p>Question</p>;
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
 };
