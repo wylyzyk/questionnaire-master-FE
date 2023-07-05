@@ -3,7 +3,7 @@ import { useRequest } from "ahooks";
 import { getQuestionListService, getQuestionService, ISearchOption } from "../network/question.ts";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { resetComponents } from "../stores/componentsList";
+import { IComponentState, resetComponents } from "../stores/componentsList";
 
 export const useLoadQuestionList = (opts?: Partial<ISearchOption>) => {
   const { isDeleted, isStar } = opts || {};
@@ -48,7 +48,7 @@ export function useLoadQuestionData() {
       selectedId = componentList[0].fe_id;
     }
 
-    dispatch(resetComponents({ componentList, selectedId }));
+    dispatch(resetComponents({ componentList, selectedId } as IComponentState));
   }, [data]);
 
   useEffect(() => {

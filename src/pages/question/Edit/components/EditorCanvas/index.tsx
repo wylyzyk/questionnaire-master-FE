@@ -5,6 +5,7 @@ import { useGetComponentInfo } from "../../../../../hooks/component.ts";
 import { IComponentInfo, setSelectedId } from "../../../../../stores/componentsList";
 import { getComponentConfByType } from "../../../../../design";
 import { useDispatch } from "react-redux";
+// import {useBindingKeyPressWithCanvas} from "../../../../../hooks/bingKeyPress.ts";
 
 interface IProps {
   loading: boolean;
@@ -20,6 +21,9 @@ function getComponent({ type, props }: IComponentInfo) {
 export const EditorCanvas: React.FC<IProps> = ({ loading }) => {
   const { componentList, selectedId } = useGetComponentInfo();
   const dispatch = useDispatch();
+
+  // 绑定快捷键
+  // useBindingKeyPressWithCanvas()
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>, id: string) => {
     event.stopPropagation();

@@ -4,7 +4,8 @@ import { IComponentState } from "../stores/componentsList";
 
 export function useGetComponentInfo() {
   const components = useSelector<IStoreState>((state) => state.components);
-  const { componentList = [], selectedId = "" } = components as IComponentState;
+  const { componentList = [], selectedId = "", copiedComponent } = components as IComponentState;
+
   const selectedComponent = componentList.find((item) => item.fe_id === selectedId);
-  return { componentList, selectedId, selectedComponent };
+  return { componentList, selectedId, selectedComponent, copiedComponent };
 }

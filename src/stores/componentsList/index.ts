@@ -1,7 +1,9 @@
 import { TComponentInfoType } from "../../design";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { message } from "antd";
-import { getNextSelectedId } from "./utils.ts";
+import { getNextSelectedId, insertComponent } from "./utils.ts";
+import cloneDeep from "lodash.clonedeep";
+import { nanoid } from "nanoid";
 
 export interface IComponentInfo {
   fe_id: string;
@@ -15,11 +17,13 @@ export interface IComponentInfo {
 export interface IComponentState {
   selectedId: string;
   componentList: Array<IComponentInfo>;
+  copiedComponent: IComponentInfo | null;
 }
 
 const initialState: IComponentState = {
   selectedId: "",
-  componentList: []
+  componentList: [],
+  copiedComponent: null
 };
 
 export const componentSlice = createSlice({
@@ -140,6 +144,21 @@ export const componentSlice = createSlice({
           })
         };
       }
+    },
+    // 拷贝组件
+    copyComponent: (state: IComponentState) => {
+      const { selectedId, componentList } = state;
+      const selectedComp = componentList.find((c) => c.fe_id === selectedId);
+      if (!selectedComp) return;
+      return {
+        ...state,
+        copiedComponent: cloneDeep(selectedComp)
+      };
+    },
+    pasteComponent: (state: IComponentState) => {
+      const { copiedComponent } = state;
+      if (!copiedComponent) return;
+      return insertComponent(state, { ...copiedComponent, fe_id: nanoid() });
     }
   }
 });
@@ -151,6 +170,8 @@ export const {
   changeComponentProps,
   removeComponent,
   changeComponentHidden,
-  toggleComponentLocked
+  toggleComponentLocked,
+  copyComponent,
+  pasteComponent
 } = componentSlice.actions;
 export default componentSlice.reducer;

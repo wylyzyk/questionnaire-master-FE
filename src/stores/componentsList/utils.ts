@@ -1,4 +1,4 @@
-import { IComponentInfo } from "./index.ts";
+import {IComponentInfo, IComponentState} from "./index.ts";
 
 export function getNextSelectedId(selectedId: string, componentList: Array<IComponentInfo>) {
   const visibleComponentList = componentList.filter(c => !c.isHidden);
@@ -17,4 +17,22 @@ export function getNextSelectedId(selectedId: string, componentList: Array<IComp
     }
   }
   return newSelectedId;
+}
+
+export const insertComponent = (state: IComponentState, newComponent: IComponentInfo) => {
+  const { selectedId, componentList } = state;
+  const index = componentList.findIndex((c) => c.fe_id === selectedId);
+  if (index < 0) {
+    return {
+      ...state,
+      selectedId: newComponent.fe_id,
+      componentList: [newComponent]
+    };
+  } else {
+    return {
+      ...state,
+      selectedId: newComponent.fe_id,
+      componentList: [...componentList.slice(0, index + 1), newComponent, ...componentList.slice(index + 1)]
+    };
+  }
 }

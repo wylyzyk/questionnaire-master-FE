@@ -6,12 +6,12 @@ import {changeComponentProps} from "../../../../../stores/componentsList";
 const NoProp = () => <div style={{ textAlign: "center" }}>未选中组件</div>;
 export const ComponentProp = () => {
   const { selectedComponent } = useGetComponentInfo();
+  const dispatch = useDispatch();
   if (!selectedComponent) return <NoProp />;
   const { type, props, isLocked, isHidden } = selectedComponent;
   const componentConf = getComponentConfByType(type);
   if (!componentConf) return <NoProp />;
 
-  const dispatch = useDispatch();
   const changeClick = (val: TComponentInfoType) => {
     if (!selectedComponent) return;
     const fe_id = selectedComponent.fe_id;

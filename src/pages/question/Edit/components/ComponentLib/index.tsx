@@ -2,20 +2,21 @@ import { componentGroups, IComponentConf } from "../../../../../design";
 import { Typography } from "antd";
 import styled from "./index.module.scss";
 import { useDispatch } from "react-redux";
-import { addComponent } from "../../../../../stores/componentsList";
+import {addComponent, IComponentInfo} from "../../../../../stores/componentsList";
 import { nanoid } from "nanoid";
 
 function getComponents(c: IComponentConf) {
   const { title, type, Component, defaultProps } = c;
   const dispatch = useDispatch();
   const handleClick = () => {
+    const payload: Partial<IComponentInfo> = {
+      fe_id: nanoid(),
+      type,
+      title,
+      props: defaultProps
+    };
     dispatch(
-      addComponent({
-        fe_id: nanoid(),
-        type,
-        title,
-        props: defaultProps
-      })
+      addComponent(payload as IComponentInfo)
     );
   };
   return (

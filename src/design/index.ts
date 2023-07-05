@@ -1,11 +1,15 @@
 import * as React from "react";
 import QNInputConf, { IQuestionnaireInputProps } from "./QNInput";
 import QNTitleConf, { IQuestionnaireTitleProps } from "./QNTitle";
+import QNParagraphConf, { IQuestionnaireParagraphProps } from "./QNParagraph";
+import QNRadioConf, { IQuestionnaireRadioProps } from "./QNRadio";
 
 /**
  * 各个组件的 prop type
  */
-export type TComponentInfoType = Partial<IQuestionnaireInputProps & IQuestionnaireTitleProps>;
+export type TComponentInfoType = Partial<
+  IQuestionnaireInputProps & IQuestionnaireTitleProps & IQuestionnaireParagraphProps & IQuestionnaireRadioProps
+>;
 
 /**
  * 组件统一配置
@@ -21,15 +25,16 @@ export interface IComponentConf {
 /**
  * 全部组件的配置列表
  */
-const componentConfList: IComponentConf[] = [QNInputConf, QNTitleConf];
+const componentConfList: IComponentConf[] = [QNInputConf, QNTitleConf, QNParagraphConf, QNRadioConf];
 
 /**
  * 组件分组
  */
 export const componentGroups = [
-  { groupId: "textGroup", groupName: "文本显示", components: [QNTitleConf] },
+  { groupId: "textGroup", groupName: "文本显示", components: [QNTitleConf, QNParagraphConf] },
   { groupId: "inputGroup", groupName: "用户输入", components: [QNInputConf] },
-]
+  { groupId: "chooseGroup", groupName: "用户选择", components: [QNRadioConf] }
+];
 
 /**
  * 根据类型获取组件配置
